@@ -1,0 +1,14 @@
+﻿@model TransportCompany.Models.Car
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>@Model.RegistrationNr</h2>
+
+@Html.LabelFor(m => m.Model, labelText: "Car model")
+<br />
+<p>@Model.Model</p>
+
+@Html.LabelFor(m => m.Volume, labelText:"Volume")
+<br />
+<p>@Model.Volume</p>

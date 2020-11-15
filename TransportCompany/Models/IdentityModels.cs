@@ -26,7 +26,7 @@ namespace TransportCompany.Models
         }
 
         //Aici vin tablele mele
-        //public DbSet<Book> Books { get; set; }
+        public DbSet<Car> Cars { get; set; }
         //public DbSet<Publisher> Publishers { get; set; }
 
 
