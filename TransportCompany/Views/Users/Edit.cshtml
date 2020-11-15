@@ -3,7 +3,7 @@
     ViewBag.Title = "Edit role of user";
 }
 <h2>@ViewBag.Title</h2>
-@using (Html.BeginForm(actionName: "Edit", controllerName: "Users", routeValues: 
+@using (Html.BeginForm(actionName: "Edit", controllerName: "Users", routeValues:
     new { id = @Model.User.Id }))
 {
     @Html.HttpMethodOverride(HttpVerbs.Put)
@@ -15,4 +15,7 @@
     <br />
     <br />
     <button class="btn btn-sm btn-success" type="submit">Save changes</button>
+    <a href="../">
+        <button class="btn btn-sm btn-info" type="button"> Back </button>
+    </a>
 }
