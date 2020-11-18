@@ -1,0 +1,30 @@
+﻿@model TransportCompany.Models.City
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>@Model.Name</h2>
+
+@Html.LabelFor(m => m.Latitude, labelText: "Latitude")
+<br />
+<p>@Model.Latitude</p>
+
+@Html.LabelFor(m => m.Longitude, labelText: "Longitude")
+<br />
+<p>@Model.Longitude</p>
+
+
+@using (Html.BeginForm(actionName: "Edit", controllerName: "City", method: FormMethod.Get, routeValues:
+new { id = Model.CityId }))
+{
+    <button style="margin-right:5px" class="btn btn-primary col-lg-1" type="submit">Update</button>
+}
+
+@using (Html.BeginForm(actionName: "Delete", controllerName: "City", routeValues:
+new { id = Model.CityId }))
+{
+    @Html.HttpMethodOverride(HttpVerbs.Delete)
+    <button class="btn btn-danger col-lg-1" type="submit">Delete</button>
+}
+
+<br />

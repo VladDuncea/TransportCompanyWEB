@@ -20,9 +20,23 @@ namespace TransportCompany.Controllers
 		[HttpGet]
 		public ActionResult Index()
 		{
-			ViewBag.UsersList = ctx.Users
+			List<UserViewModel> users = new List<UserViewModel>();
+
+			List<ApplicationUser> UsersList = ctx.Users
 			.OrderBy(u => u.UserName)
 			.ToList();
+
+			foreach(var user in UsersList)
+            {
+				UserViewModel uvm = new UserViewModel();
+				uvm.User = user;
+				IdentityRole userRole = ctx.Roles
+				.Find(uvm.User.Roles.First().RoleId);
+				uvm.RoleName = userRole.Name;
+				users.Add(uvm);
+			}
+
+			ViewBag.UsersList = users;
 
 			return View();
 		}
@@ -87,6 +101,33 @@ namespace TransportCompany.Controllers
 				return View(uvm);
 			}
 		}
+
+
+		// Delete ----------------------------
+
+		[HttpDelete]
+		public ActionResult Delete(string id)
+		{
+			if (id != null)
+			{
+				ApplicationUser user = ctx.Users.Find(id);
+
+				if (user == null)
+				{
+					//Masina nu exista in baza de date
+					return HttpNotFound("Couldn't find the user with id: " + id + " !");
+				}
+
+				ctx.Users.Remove(user);
+				ctx.SaveChanges();
+
+				return RedirectToAction("Index");
+			}
+
+			//Nu avem parametrul id
+			return HttpNotFound("Missing id parameter!");
+		}
+
 	}
 
 }

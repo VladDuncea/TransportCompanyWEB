@@ -20,8 +20,8 @@ namespace TransportCompany.Models
 		public float Weight { get; set; }
 
 		//Foreign keys with City
-		[Required]
-		public virtual City FromCity { get; set; }
+		//[Required]
+		//public virtual City FromCity { get; set; }
 
 		[Required]
 		public virtual City ToCity { get; set; }

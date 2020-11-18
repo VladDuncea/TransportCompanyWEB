@@ -25,6 +25,7 @@ namespace TransportCompany.Controllers
 		// Details ----------------------------
 
 		[HttpGet]
+		[Authorize(Roles = "Admin,Driver")]
 		public ActionResult Details(string id)
 		{
 			if (id != null)
@@ -44,6 +45,7 @@ namespace TransportCompany.Controllers
 		// New ----------------------------
 
 		[HttpGet]
+		[Authorize(Roles = "Admin")]
 		public ActionResult New()
 		{
 			//Construim o masina noua, fara date
@@ -52,6 +54,7 @@ namespace TransportCompany.Controllers
 		}
 
 		[HttpPost]
+		[Authorize(Roles = "Admin")]
 		public ActionResult New(Car newCar)
 		{
 			try
@@ -81,6 +84,7 @@ namespace TransportCompany.Controllers
 		// Edit ----------------------------
 
 		[HttpGet]
+		[Authorize(Roles = "Admin")]
 		public ActionResult Edit(string id)
 		{
 			if (id != null)
@@ -103,6 +107,7 @@ namespace TransportCompany.Controllers
 		}
 
 		[HttpPut]
+		[Authorize(Roles = "Admin")]
 		public ActionResult Edit(Car editCar)
 		{
 			try
@@ -132,11 +137,12 @@ namespace TransportCompany.Controllers
 		// Delete ----------------------------
 
 		[HttpDelete]
+		[Authorize(Roles = "Admin")]
 		public ActionResult Delete(string id)
 		{
 			if (id != null)
 			{
-				Car car = ctx.Cars.Find();
+				Car car = ctx.Cars.Find(id);
 
 				if(car == null)
                 {

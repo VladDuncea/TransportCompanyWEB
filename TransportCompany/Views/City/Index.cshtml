@@ -1,0 +1,43 @@
+﻿@model TransportCompany.Models.City
+@{
+    ViewBag.Title = "Cities";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<br />
+@using (Html.BeginForm(actionName: "New", controllerName: "City", method: FormMethod.Get))
+{
+    <button class="btn btn-primary">Add a city</button>
+}
+<br />
+
+
+<div class="panel-group">
+
+    @foreach (TransportCompany.Models.City city in ViewBag.Cities)
+    {
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @Html.LabelFor(m => m.Name)
+                <br />
+                <p>@city.Name</p>
+
+                @Html.LabelFor(m => m.Latitude)
+                <br />
+                <p>@city.Latitude</p>
+
+                @Html.LabelFor(m => m.Longitude)
+                <br />
+                <p>@city.Latitude</p>
+
+                @using (Html.BeginForm(actionName: "Details", controllerName: "City", method: FormMethod.Get,
+                    routeValues: new { id = city.CityId }))
+                {
+                    <button class="btn btn-primary">Details</button>
+                }
+            </div>
+        </div>
+    }
+
+</div>

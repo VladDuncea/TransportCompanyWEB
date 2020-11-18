@@ -1,6 +1,7 @@
 ﻿@model TransportCompany.Models.Car
 @{
     ViewBag.Title = "Details";
+    ViewBag.Admin = User.IsInRole("Admin");
 }
 
 <h2>@Model.RegistrationNr</h2>
@@ -13,17 +14,19 @@
 <br />
 <p>@Model.Volume</p>
 
-
-@using (Html.BeginForm(actionName: "Edit", controllerName: "Car", method: FormMethod.Get, routeValues:
-new { id = Model.RegistrationNr }))
+@if (ViewBag.Admin)
 {
-    <button style="margin-right:5px" class="btn btn-primary col-lg-1" type="submit">Update</button>
-}
+    using (Html.BeginForm(actionName: "Edit", controllerName: "Car", method: FormMethod.Get, routeValues:
+    new { id = Model.RegistrationNr }))
+    {
+        <button style="margin-right:5px" class="btn btn-primary col-lg-1" type="submit">Update</button>
+    }
 
-@using (Html.BeginForm(actionName: "Delete", controllerName: "Car", routeValues:
-new { id = Model.RegistrationNr }))
-{
-    @Html.HttpMethodOverride(HttpVerbs.Delete)
-    <button class="btn btn-danger col-lg-1" type="submit">Delete</button>
+    using (Html.BeginForm(actionName: "Delete", controllerName: "Car", routeValues:
+    new { id = Model.RegistrationNr }))
+    {
+        @Html.HttpMethodOverride(HttpVerbs.Delete)
+        <button class="btn btn-danger col-lg-1" type="submit">Delete</button>
+    }
 }
 <br />
