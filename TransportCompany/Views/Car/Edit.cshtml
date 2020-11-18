@@ -1,0 +1,27 @@
+﻿@model TransportCompany.Models.Car
+@{
+    ViewBag.Title = "Edit " + Model.RegistrationNr;
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm(actionName: "Edit", controllerName: "Car"))
+{
+    @Html.HttpMethodOverride(HttpVerbs.Put)
+
+    @Html.HiddenFor(m => m.RegistrationNr)
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Model, "Car model:")
+        @Html.EditorFor(m => m.Model, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(m => m.Model, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Volume, "Volume (in liters):")
+        @Html.EditorFor(m => m.Volume, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(m => m.Volume, "", new { @class = "text-danger" })
+    </div>
+
+    <button class="btn btn-primary" type="submit">Update</button>
+}

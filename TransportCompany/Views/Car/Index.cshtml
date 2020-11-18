@@ -1,25 +1,37 @@
 ﻿@model TransportCompany.Models.Car
 @{
-    ViewBag.Title = "Cars";
+	ViewBag.Title = "Cars";
 }
 
 <h2>@ViewBag.Title</h2>
 
-@foreach (TransportCompany.Models.Car car in ViewBag.Cars)
+<br />
+@using (Html.BeginForm(actionName: "New", controllerName: "Car", method: FormMethod.Get))
 {
-    <div class="panel-body">
-        @Html.LabelFor(m => m.RegistrationNr)
-        <br />
-        <p>@car.RegistrationNr</p>
-        @Html.LabelFor(m => m.Model)
-        <br />
-        <p>@car.Model</p>
-
-        @using (Html.BeginForm(actionName: "Details", controllerName: "Car", method: FormMethod.Get,
-            routeValues: new { regNr = car.RegistrationNr }))
-        {
-            <button class="btn btn-primary">Details</button>
-        }
-    </div>
+	<button class="btn btn-primary">Add a car</button>
 }
+<br />
 
+<div class="panel-group">
+
+	@foreach (TransportCompany.Models.Car car in ViewBag.Cars)
+	{
+		<div class="panel panel-default">
+			<div class="panel-body">
+				@Html.LabelFor(m => m.RegistrationNr)
+				<br />
+				<p>@car.RegistrationNr</p>
+				@Html.LabelFor(m => m.Model)
+				<br />
+				<p>@car.Model</p>
+
+				@using (Html.BeginForm(actionName: "Details", controllerName: "Car", method: FormMethod.Get,
+					routeValues: new { id = car.RegistrationNr }))
+				{
+					<button class="btn btn-primary">Details</button>
+				}
+			</div>
+		</div>
+	}
+
+</div>

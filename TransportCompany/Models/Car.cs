@@ -9,15 +9,16 @@ namespace TransportCompany.Models
     public class Car
     {
         [Key]
-        [MinLength(5, ErrorMessage = "Registration number cannot be less than {0} characters"),
-            MaxLength(10, ErrorMessage = "Registration number cannot be more than {1} characters!")]
+        [MinLength(5, ErrorMessage = "{0} cannot be less than {1} characters"),
+            MaxLength(10, ErrorMessage = "{0} cannot be more than {1} characters!")]
         public string RegistrationNr { get; set; }
 
-        [MinLength(5, ErrorMessage = "Model cannot be less than {0} characters!"),
-            MaxLength(100, ErrorMessage = "Registration cannot be more than {1} characters!")]
+        [MinLength(5, ErrorMessage = "{0} cannot be less than {1} characters!"),
+            MaxLength(100, ErrorMessage = "{0} cannot be more than {1} characters!")]
         public string Model { get; set; }
 
-        [Required]
+        [Required,
+            Range(0,Double.PositiveInfinity,ErrorMessage = "Value for {0} must be between {1} and {2}!")]
         public float Volume { get; set; }
     }
 }

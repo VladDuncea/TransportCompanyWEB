@@ -9,6 +9,21 @@
 <br />
 <p>@Model.Model</p>
 
-@Html.LabelFor(m => m.Volume, labelText:"Volume")
+@Html.LabelFor(m => m.Volume, labelText: "Volume")
 <br />
 <p>@Model.Volume</p>
+
+
+@using (Html.BeginForm(actionName: "Edit", controllerName: "Car", method: FormMethod.Get, routeValues:
+new { id = Model.RegistrationNr }))
+{
+    <button style="margin-right:5px" class="btn btn-primary col-lg-1" type="submit">Update</button>
+}
+
+@using (Html.BeginForm(actionName: "Delete", controllerName: "Car", routeValues:
+new { id = Model.RegistrationNr }))
+{
+    @Html.HttpMethodOverride(HttpVerbs.Delete)
+    <button class="btn btn-danger col-lg-1" type="submit">Delete</button>
+}
+<br />

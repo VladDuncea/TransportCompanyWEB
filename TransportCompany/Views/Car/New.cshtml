@@ -1,0 +1,36 @@
+﻿@model TransportCompany.Models.Car
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+@using (Html.BeginForm(actionName: "New", controllerName: "Car", method: FormMethod.Post))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.RegistrationNr, labelText: "Registration Number:")
+        @Html.TextBoxFor(m => m.RegistrationNr, null, new { placeholder = "Type in the car's reg nr", @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.RegistrationNr, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Model, "Car model:")
+        @Html.TextBoxFor(m => m.Model, null, new { placeholder = "Type in the car's model", @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Model, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Volume, "Volume (in liters):")
+        @Html.TextBoxFor(m => m.Volume, null, new { placeholder = "Type in the car's volume", @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Volume, "", new { @class = "text-danger" })
+    </div>
+
+    <button style="margin-right:5px" class="btn btn-primary" type="submit">Add</button>
+
+    using (Html.BeginForm(actionName: "Index", controllerName: "Car", method: FormMethod.Get))
+    {
+        <button type="submit" class="btn btn-danger">Back</button>
+
+    }
+}

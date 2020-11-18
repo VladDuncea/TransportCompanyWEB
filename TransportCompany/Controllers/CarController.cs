@@ -25,20 +25,134 @@ namespace TransportCompany.Controllers
 		// Details ----------------------------
 
 		[HttpGet]
-		public ActionResult Details(string regNr)
+		public ActionResult Details(string id)
 		{
-			if(regNr != null)
+			if (id != null)
 			{
-				Car car = ctx.Cars.Find(regNr);
-				if(car != null)
+				Car car = ctx.Cars.Find(id);
+				if (car != null)
 				{
 					return View(car);
 				}
-				
-				return HttpNotFound("Couldn't find the car with regNr: " + regNr + " !");
+
+				return HttpNotFound("Couldn't find the car with regNr: " + id + " !");
 			}
 
-			return HttpNotFound("Missing book id parameter!");
+			return HttpNotFound("Missing id parameter!");
 		}
+
+		// New ----------------------------
+
+		[HttpGet]
+		public ActionResult New()
+		{
+			//Construim o masina noua, fara date
+			Car car = new Car();
+			return View(car);
+		}
+
+		[HttpPost]
+		public ActionResult New(Car newCar)
+		{
+			try
+			{
+				if (ModelState.IsValid)
+				{
+					//Adauga masina in baza de date
+					ctx.Cars.Add(newCar);
+
+					//Save database state
+					ctx.SaveChanges();
+
+					//In caz de succes ne duce inapoi la index
+					return RedirectToAction("Index");
+				}
+
+				//Masina nu respecta regulile, ne intoarcem la edit
+				return View(newCar);
+			}
+			catch (Exception)
+			{
+				//A aparut o eroare, ne intoarcem la edit
+				return View(newCar);
+			}
+		}
+
+		// Edit ----------------------------
+
+		[HttpGet]
+		public ActionResult Edit(string id)
+		{
+			if (id != null)
+			{
+				//Cautam masina
+				Car car = ctx.Cars.Find(id);
+
+				if (car == null)
+				{
+					//Masina nu exista in baza de date
+					return HttpNotFound("Couldn't find the car with regNr: " + id + " !");
+				}
+
+				//Am gasit masina
+				return View(car);
+			}
+
+			//Nu avem parametrul id
+			return HttpNotFound("Missing id parameter!");
+		}
+
+		[HttpPut]
+		public ActionResult Edit(Car editCar)
+		{
+			try
+			{
+				if (ModelState.IsValid)
+				{
+					Car car = ctx.Cars.Find(editCar.RegistrationNr);
+
+					if (TryUpdateModel(car))
+					{
+						car.Model = editCar.Model;
+						car.Volume = editCar.Volume;
+						ctx.SaveChanges();
+					}
+
+					return RedirectToAction("Index");
+				}
+
+				return View(editCar);
+			}
+			catch (Exception)
+			{
+				return View(editCar);
+			}
+		}
+
+		// Delete ----------------------------
+
+		[HttpDelete]
+		public ActionResult Delete(string id)
+		{
+			if (id != null)
+			{
+				Car car = ctx.Cars.Find();
+
+				if(car == null)
+                {
+					//Masina nu exista in baza de date
+					return HttpNotFound("Couldn't find the car with regNr: " + id + " !");
+				}
+
+				ctx.Cars.Remove(car);
+				ctx.SaveChanges();
+
+				return RedirectToAction("Index");
+			}
+
+			//Nu avem parametrul id
+			return HttpNotFound("Missing id parameter!");
+		}
+
 	}
 }

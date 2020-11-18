@@ -27,7 +27,8 @@ namespace TransportCompany.Models
 
         //Aici vin tablele mele
         public DbSet<Car> Cars { get; set; }
-        //public DbSet<Publisher> Publishers { get; set; }
+        public DbSet<City> Cities { get; set; }
+        public DbSet<Package> Packages { get; set; }
 
 
         public static ApplicationDbContext Create()
