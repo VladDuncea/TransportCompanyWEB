@@ -3,15 +3,166 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TransportCompany.Models;
 
 namespace TransportCompany.Controllers
 {
     public class PackageController : Controller
     {
-        // GET: Package
-        public ActionResult Index()
-        {
-            return View();
-        }
-    }
+		private ApplicationDbContext ctx = new ApplicationDbContext();
+
+		// Index -----------------------------
+		[HttpGet]
+		[Authorize(Roles = "Admin,Client")]
+		public ActionResult Index()
+		{
+			//TODO: Get packages only for a client if the user is client
+			List<Package> packages = ctx.Packages.ToList();
+			ViewBag.Packages = packages;
+
+			return View();
+		}
+
+		// Details ----------------------------
+		[HttpGet]
+		[Authorize(Roles = "Admin,Client")]
+		public ActionResult Details(int? id)
+		{
+			//TODO: check if client has access to that package
+			if (id != null)
+			{
+				Package package = ctx.Packages.Find(id);
+				if (package != null)
+				{
+					return View(package);
+				}
+
+				return HttpNotFound("Couldn't find the package with id: " + id + " !");
+			}
+
+			return HttpNotFound("Missing id parameter!");
+		}
+
+		// New ----------------------------
+		[HttpGet]
+		[Authorize(Roles = "Admin,Client")]
+		public ActionResult New()
+		{
+			//Construim un pachet nou, fara date
+			Package package = new Package();
+			return View(package);
+		}
+
+		[HttpPost]
+		[Authorize(Roles = "Admin,Client")]
+		public ActionResult New(Package newPackage)
+		{
+			try
+			{
+				if (ModelState.IsValid)
+				{
+					//TODO: Set the client to the current user
+					newPackage.Client = null;
+
+					//Adauga pachetul in baza de date
+					ctx.Packages.Add(newPackage);
+
+					//Save database state
+					ctx.SaveChanges();
+
+					//In caz de succes ne duce inapoi la index
+					return RedirectToAction("Index");
+				}
+
+				//Masina nu respecta regulile, ne intoarcem la edit
+				return View(newPackage);
+			}
+			catch (Exception)
+			{
+				//A aparut o eroare, ne intoarcem la edit
+				return View(newPackage);
+			}
+		}
+
+		// Edit ----------------------------
+
+		[HttpGet]
+		[Authorize(Roles = "Admin")]
+		public ActionResult Edit(int? id)
+		{
+			if (id != null)
+			{
+				//Cautam masina
+				Package package = ctx.Packages.Find(id);
+
+				if (package == null)
+				{
+					//Masina nu exista in baza de date
+					return HttpNotFound("Couldn't find the package with id: " + id + " !");
+				}
+
+				//Am gasit masina
+				return View(package);
+			}
+
+			//Nu avem parametrul id
+			return HttpNotFound("Missing id parameter!");
+		}
+
+		[HttpPut]
+		[Authorize(Roles = "Admin,Client")]
+		public ActionResult Edit(Package editPackage)
+		{
+			//TODO:check if the package belongs to the current user if not admin
+			try
+			{
+				if (ModelState.IsValid)
+				{
+					Package package = ctx.Packages.Find(editPackage.PackageId);
+
+					if (TryUpdateModel(package))
+					{
+						package.Volume = editPackage.Volume;
+						package.Weight = editPackage.Weight;
+						ctx.SaveChanges();
+					}
+
+					return RedirectToAction("Index");
+				}
+
+				return View(editPackage);
+			}
+			catch (Exception)
+			{
+				return View(editPackage);
+			}
+		}
+
+		// Delete ----------------------------
+
+		[HttpDelete]
+		[Authorize(Roles = "Admin,Client")]
+		public ActionResult Delete(int? id)
+		{
+			//TODO: check if package belongs to client if not admin
+			if (id != null)
+			{
+				Package package = ctx.Packages.Find(id);
+
+				if (package == null)
+				{
+					//Masina nu exista in baza de date
+					return HttpNotFound("Couldn't find the package with id: " + id + " !");
+				}
+
+				ctx.Packages.Remove(package);
+				ctx.SaveChanges();
+
+				return RedirectToAction("Index");
+			}
+
+			//Nu avem parametrul id
+			return HttpNotFound("Missing id parameter!");
+		}
+	}
 }

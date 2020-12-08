@@ -20,6 +20,7 @@ namespace TransportCompany.Models
 		public float Weight { get; set; }
 
 		//Foreign keys with City
+		//TODO: ask how to have two keys to city
 		//[Required]
 		//public virtual City FromCity { get; set; }
 
