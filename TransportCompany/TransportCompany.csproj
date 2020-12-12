@@ -183,6 +183,7 @@
     <Compile Include="Models\Package.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\PackageViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -256,10 +257,12 @@
     <Content Include="Views\City\New.cshtml" />
     <Content Include="Views\City\Delete.cshtml" />
     <Content Include="Views\City\Edit.cshtml" />
+    <Content Include="Views\Package\Index.cshtml" />
+    <Content Include="Views\Package\Details.cshtml" />
+    <Content Include="Views\Package\New.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Package\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

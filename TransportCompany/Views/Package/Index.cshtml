@@ -1,0 +1,45 @@
+﻿@model TransportCompany.Models.Package
+@{
+    ViewBag.Title = "Packages";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<br />
+
+@using (Html.BeginForm(actionName: "New", controllerName: "Package", method: FormMethod.Get))
+{
+    <button class="btn btn-primary">Add a package</button>
+}
+<br />
+
+
+
+<div class="panel-group">
+
+    @foreach (TransportCompany.Models.Package package in ViewBag.Packages)
+    {
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @Html.LabelFor(m => m.PackageId, "Package ID")
+                <br />
+                <p>@package.PackageId</p>
+
+                @Html.LabelFor(m => m.Volume)
+                <br />
+                <p>@package.Volume</p>
+
+                @Html.LabelFor(m => m.Weight)
+                <br />
+                <p>@package.Weight</p>
+
+                @using (Html.BeginForm(actionName: "Details", controllerName: "Package", method: FormMethod.Get,
+                    routeValues: new { id = package.PackageId }))
+                {
+                    <button class="btn btn-primary">Details</button>
+                }
+            </div>
+        </div>
+    }
+
+</div>

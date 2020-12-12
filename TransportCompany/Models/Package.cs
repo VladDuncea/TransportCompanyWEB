@@ -9,7 +9,7 @@ namespace TransportCompany.Models
 	public class Package
 	{
 		[Key]
-		public string PackageId { get; set; }
+		public int PackageId { get; set; }
 
 		[Required,
 			Range(0, 150, ErrorMessage = "Value for {0} must be between {1} and {2}!")]

@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using TransportCompany.Models;
 
 namespace TransportCompany.Controllers
@@ -50,22 +53,40 @@ namespace TransportCompany.Controllers
 		{
 			//Construim un pachet nou, fara date
 			Package package = new Package();
-			return View(package);
+
+			//Constuim un package view model
+			PackageViewModel packageViewModel = new PackageViewModel();
+			packageViewModel.Package = package;
+			packageViewModel.ListCities = GetAllCities();
+
+			return View(packageViewModel);
 		}
 
 		[HttpPost]
 		[Authorize(Roles = "Admin,Client")]
-		public ActionResult New(Package newPackage)
+		public ActionResult New(PackageViewModel newPackage)
 		{
+			newPackage.ListCities = GetAllCities();
 			try
 			{
-				if (ModelState.IsValid)
-				{
-					//TODO: Set the client to the current user
-					newPackage.Client = null;
+				//Adaugam userul conectat ca si client
+				newPackage.Package.Client = ctx.Users.Find(User.Identity.GetUserId());
 
+				newPackage.Package.ToCity = ctx.Cities.Find(newPackage.ToCityId);
+
+				newPackage.Package.PackageId = ctx.Packages.ToList().Last().PackageId+1;
+
+				if (newPackage.Package.ToCity == null)
+				{
+					//Orasul nu exista, poate a fost sters intre timp, intoarcem utilizatorul cu o lista de orase noua
+					return View(newPackage);
+				}
+
+				//TODO: ModelState.isValid ??
+				if (true)
+				{	
 					//Adauga pachetul in baza de date
-					ctx.Packages.Add(newPackage);
+					ctx.Packages.Add(newPackage.Package);
 
 					//Save database state
 					ctx.SaveChanges();
@@ -74,10 +95,10 @@ namespace TransportCompany.Controllers
 					return RedirectToAction("Index");
 				}
 
-				//Masina nu respecta regulile, ne intoarcem la edit
+				//Pachetul nu respecta regulile, ne intoarcem la edit
 				return View(newPackage);
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
 				//A aparut o eroare, ne intoarcem la edit
 				return View(newPackage);
@@ -163,6 +184,26 @@ namespace TransportCompany.Controllers
 
 			//Nu avem parametrul id
 			return HttpNotFound("Missing id parameter!");
+		}
+
+
+		// Helpers -------------------------------
+		[NonAction] 
+		public IEnumerable<SelectListItem> GetAllCities()
+		{
+			// generam o lista goala
+			var selectList = new List<SelectListItem>();
+			foreach (var city in ctx.Cities.ToList())
+			{
+				// adaugam in lista elementele necesare pt dropdown
+				selectList.Add(new SelectListItem
+				{
+					Value = city.CityId.ToString(),
+					Text = city.Name
+				});
+			}
+			// returnam lista pentru dropdown
+			return selectList;
 		}
 	}
 }

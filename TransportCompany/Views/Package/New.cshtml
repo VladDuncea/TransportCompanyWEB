@@ -1,0 +1,37 @@
+﻿@model TransportCompany.Models.PackageViewModel
+@{
+    ViewBag.Title = "Create a package";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+@using (Html.BeginForm(actionName: "New", controllerName: "Package", method: FormMethod.Post))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.Package.Volume, "Package volume (in liters):")
+        @Html.TextBoxFor(m => m.Package.Volume, null, new { placeholder = "Type in the package's volume", @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Package.Volume, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Package.Weight, "Weight (in kg):")
+        @Html.TextBoxFor(m => m.Package.Weight, null, new { placeholder = "Type in the package's weight", @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Package.Weight, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.ToCityId, "City of destination:")
+        @Html.DropDownListFor(m => m.ToCityId, new SelectList(Model.ListCities, "Value", "Text"), "Choose a city", new { @class = "form - control" })
+        @Html.ValidationMessageFor(m => m.ToCityId, "", new { @class = "text-danger" })
+    </div>
+
+    <button style="margin-right:5px" class="btn btn-primary" type="submit">Add</button>
+}
+
+<br />
+
+@using (Html.BeginForm(actionName: "Index", controllerName: "Package", method: FormMethod.Get))
+{
+    <button type="submit" class="btn btn-danger">Back</button>
+}
