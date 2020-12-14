@@ -74,16 +74,18 @@ namespace TransportCompany.Controllers
 
 				newPackage.Package.ToCity = ctx.Cities.Find(newPackage.ToCityId);
 
-				newPackage.Package.PackageId = ctx.Packages.ToList().Last().PackageId+1;
-
-				if (newPackage.Package.ToCity == null)
-				{
-					//Orasul nu exista, poate a fost sters intre timp, intoarcem utilizatorul cu o lista de orase noua
+				if(newPackage.Package.ToCity == null || newPackage.Package.Client == null)
+                {
+					//eroare la oras/client
 					return View(newPackage);
 				}
 
+				//Elimina aceste campuri din verificare pentru ca ele sunt adaugate in cod
+				ModelState.Remove("Package.ToCity");
+				ModelState.Remove("Package.Client");
+
 				//TODO: ModelState.isValid ??
-				if (true)
+				if (ModelState.IsValid)
 				{	
 					//Adauga pachetul in baza de date
 					ctx.Packages.Add(newPackage.Package);
@@ -137,6 +139,10 @@ namespace TransportCompany.Controllers
 			//TODO:check if the package belongs to the current user if not admin
 			try
 			{
+				//Eliminam verificarile pe campurile pe care nu le folosim
+				ModelState.Remove("ToCity");
+				ModelState.Remove("Client");
+
 				if (ModelState.IsValid)
 				{
 					Package package = ctx.Packages.Find(editPackage.PackageId);

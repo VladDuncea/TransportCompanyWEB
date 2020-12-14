@@ -27,10 +27,9 @@
     </div>
 
     <button style="margin-right:5px" class="btn btn-primary" type="submit">Add</button>
+}
 
-    using (Html.BeginForm(actionName: "Index", controllerName: "Car", method: FormMethod.Get))
-    {
-        <button type="submit" class="btn btn-danger">Back</button>
-
-    }
+@using (Html.BeginForm(actionName: "Index", controllerName: "Car", method: FormMethod.Get))
+{
+    <button type="submit" class="btn btn-danger">Back</button>
 }

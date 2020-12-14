@@ -25,6 +25,6 @@ namespace TransportCompany.Models
         public float Latitude { get; set; }
 
         // many-to-one relationship
-        public virtual ICollection<City> Cities { get; set; }
+        public virtual ICollection<Package> Packages { get; set; }
     }
 }

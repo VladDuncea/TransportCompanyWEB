@@ -260,6 +260,8 @@
     <Content Include="Views\Package\Index.cshtml" />
     <Content Include="Views\Package\Details.cshtml" />
     <Content Include="Views\Package\New.cshtml" />
+    <Content Include="Views\Package\Delete.cshtml" />
+    <Content Include="Views\Package\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
