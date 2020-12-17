@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -50,19 +52,41 @@ namespace TransportCompany.Controllers
 		{
 			//Construim o masina noua, fara date
 			Car car = new Car();
-			return View(car);
+
+			//Constuim un car view model
+			CarViewModel carViewModel = new CarViewModel();
+			carViewModel.Car = car;
+			carViewModel.ListDrivers = GetAllDrivers();
+
+			return View(carViewModel);
 		}
 
 		[HttpPost]
 		[Authorize(Roles = "Admin")]
-		public ActionResult New(Car newCar)
+		public ActionResult New(CarViewModel newCar)
 		{
+
+			newCar.ListDrivers = GetAllDrivers();
+
 			try
 			{
+				//Get driver from id
+				newCar.Car.Driver = ctx.Users.Find(newCar.DriverId);
+
+				//Verificare cod valid
+				if(newCar.Car.Driver == null)
+                {
+					//Nu am gasit utilizatorul
+					return View(newCar);
+				}
+
+				//Eliminare verificare driver
+				ModelState.Remove("Car.Driver");
+
 				if (ModelState.IsValid)
 				{
 					//Adauga masina in baza de date
-					ctx.Cars.Add(newCar);
+					ctx.Cars.Add(newCar.Car);
 
 					//Save database state
 					ctx.SaveChanges();
@@ -98,8 +122,14 @@ namespace TransportCompany.Controllers
 					return HttpNotFound("Couldn't find the car with regNr: " + id + " !");
 				}
 
+				//Constuim un car view model
+				CarViewModel carViewModel = new CarViewModel();
+				carViewModel.Car = car;
+				carViewModel.ListDrivers = GetAllDrivers();
+				carViewModel.DriverId = car.Driver.Id;
+
 				//Am gasit masina
-				return View(car);
+				return View(carViewModel);
 			}
 
 			//Nu avem parametrul id
@@ -108,18 +138,34 @@ namespace TransportCompany.Controllers
 
 		[HttpPut]
 		[Authorize(Roles = "Admin")]
-		public ActionResult Edit(Car editCar)
+		public ActionResult Edit(CarViewModel editCar)
 		{
+			editCar.ListDrivers = GetAllDrivers();
+
 			try
 			{
+				//Get driver from id
+				editCar.Car.Driver = ctx.Users.Find(editCar.DriverId);
+
+				//Verificare cod valid
+				if (editCar.Car.Driver == null)
+				{
+					//Nu am gasit utilizatorul
+					return View(editCar);
+				}
+
+				//Eliminare verificare driver
+				ModelState.Remove("Car.Driver");
+
 				if (ModelState.IsValid)
 				{
-					Car car = ctx.Cars.Find(editCar.RegistrationNr);
+					Car car = ctx.Cars.Find(editCar.Car.RegistrationNr);
 
 					if (TryUpdateModel(car))
 					{
-						car.Model = editCar.Model;
-						car.Volume = editCar.Volume;
+						car.Model = editCar.Car.Model;
+						car.Volume = editCar.Car.Volume;
+						car.Driver = editCar.Car.Driver;
 						ctx.SaveChanges();
 					}
 
@@ -158,6 +204,33 @@ namespace TransportCompany.Controllers
 
 			//Nu avem parametrul id
 			return HttpNotFound("Missing id parameter!");
+		}
+
+		// Helpers -------------------------------
+		[NonAction]
+		public IEnumerable<SelectListItem> GetAllDrivers()
+		{
+			// generam o lista goala
+			var selectList = new List<SelectListItem>();
+			foreach (var driver in ctx.Users.ToList())
+			{
+
+				var userStore = new UserStore<ApplicationUser>(ctx);
+				var userManager = new UserManager<ApplicationUser>(userStore);
+
+				if (userManager.IsInRole(driver.Id,"Driver"))
+                {
+					// adaugam in lista elementele necesare pt dropdown
+					selectList.Add(new SelectListItem
+					{
+						Value = driver.Id.ToString(),
+						Text = driver.UserName
+					});
+				}
+				
+			}
+			// returnam lista pentru dropdown
+			return selectList;
 		}
 
 	}

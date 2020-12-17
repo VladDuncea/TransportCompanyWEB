@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
@@ -10,8 +11,8 @@ using TransportCompany.Models;
 
 namespace TransportCompany.Controllers
 {
-    public class PackageController : Controller
-    {
+	public class PackageController : Controller
+	{
 		private ApplicationDbContext ctx = new ApplicationDbContext();
 
 		// Index -----------------------------
@@ -19,8 +20,20 @@ namespace TransportCompany.Controllers
 		[Authorize(Roles = "Admin,Client")]
 		public ActionResult Index()
 		{
-			//TODO: Get packages only for a client if the user is client
-			List<Package> packages = ctx.Packages.ToList();
+			List<Package> packages;
+			if (User.IsInRole("Admin"))
+			{
+				//Afisam toate pachetele
+				packages = ctx.Packages.ToList();
+			}
+			else
+			{
+				//Utilizatorul curent
+				ApplicationUser user = ctx.Users.Find(User.Identity.GetUserId());
+				//Daca utilizatorul curent nu e admin luam doar pachetele lui
+				packages = ctx.Packages.Where(pachet => pachet.Client.Id == user.Id).ToList();
+			}
+			
 			ViewBag.Packages = packages;
 
 			return View();
@@ -31,19 +44,34 @@ namespace TransportCompany.Controllers
 		[Authorize(Roles = "Admin,Client")]
 		public ActionResult Details(int? id)
 		{
-			//TODO: check if client has access to that package
-			if (id != null)
+			if (id == null)
 			{
-				Package package = ctx.Packages.Find(id);
-				if (package != null)
-				{
-					return View(package);
-				}
+				return HttpNotFound("Missing id parameter!");
+			}
+			
+			//Cautam pachetul
+			Package package = ctx.Packages.Find(id);
 
+			//Verificare existenta pachet
+			if (package == null)
+			{
 				return HttpNotFound("Couldn't find the package with id: " + id + " !");
 			}
 
-			return HttpNotFound("Missing id parameter!");
+
+			//Verificare drepturi admin
+			if (!User.IsInRole("Admin"))
+			{
+				//Utilizatorul curent
+				ApplicationUser user = ctx.Users.Find(User.Identity.GetUserId());
+				if(user.Id != package.Client.Id)
+				{
+					//unauthorized access
+					return new HttpUnauthorizedResult();
+				}
+			}
+
+			return View(package);
 		}
 
 		// New ----------------------------
@@ -75,7 +103,7 @@ namespace TransportCompany.Controllers
 				newPackage.Package.ToCity = ctx.Cities.Find(newPackage.ToCityId);
 
 				if(newPackage.Package.ToCity == null || newPackage.Package.Client == null)
-                {
+				{
 					//eroare la oras/client
 					return View(newPackage);
 				}
@@ -113,30 +141,28 @@ namespace TransportCompany.Controllers
 		[Authorize(Roles = "Admin")]
 		public ActionResult Edit(int? id)
 		{
-			if (id != null)
+			if (id == null)
 			{
-				//Cautam masina
-				Package package = ctx.Packages.Find(id);
+				//Nu avem parametrul id
+				return HttpNotFound("Missing id parameter!");
+			}
+			//Cautam pachetul
+			Package package = ctx.Packages.Find(id);
 
-				if (package == null)
-				{
-					//Masina nu exista in baza de date
-					return HttpNotFound("Couldn't find the package with id: " + id + " !");
-				}
-
-				//Am gasit masina
-				return View(package);
+			if (package == null)
+			{
+				//Pachetul nu exista in baza de date
+				return HttpNotFound("Couldn't find the package with id: " + id + " !");
 			}
 
-			//Nu avem parametrul id
-			return HttpNotFound("Missing id parameter!");
+			//Am gasit pachetul
+			return View(package);
 		}
 
 		[HttpPut]
-		[Authorize(Roles = "Admin,Client")]
+		[Authorize(Roles = "Admin")]
 		public ActionResult Edit(Package editPackage)
 		{
-			//TODO:check if the package belongs to the current user if not admin
 			try
 			{
 				//Eliminam verificarile pe campurile pe care nu le folosim
@@ -171,25 +197,34 @@ namespace TransportCompany.Controllers
 		[Authorize(Roles = "Admin,Client")]
 		public ActionResult Delete(int? id)
 		{
-			//TODO: check if package belongs to client if not admin
-			if (id != null)
+			if (id == null)
 			{
-				Package package = ctx.Packages.Find(id);
-
-				if (package == null)
-				{
-					//Masina nu exista in baza de date
-					return HttpNotFound("Couldn't find the package with id: " + id + " !");
-				}
-
-				ctx.Packages.Remove(package);
-				ctx.SaveChanges();
-
-				return RedirectToAction("Index");
+				//Nu avem parametrul id
+				return HttpNotFound("Missing id parameter!");
 			}
 
-			//Nu avem parametrul id
-			return HttpNotFound("Missing id parameter!");
+			Package package = ctx.Packages.Find(id);
+			if(!User.IsInRole("Admin"))
+            {
+				//Utilizatorul curent
+				ApplicationUser user = ctx.Users.Find(User.Identity.GetUserId());
+				if (user.Id != package.Client.Id)
+				{
+					//unauthorized access
+					return new HttpUnauthorizedResult();
+				}
+			}
+
+			if (package == null)
+			{
+				//Masina nu exista in baza de date
+				return HttpNotFound("Couldn't find the package with id: " + id + " !");
+			}
+
+			ctx.Packages.Remove(package);
+			ctx.SaveChanges();
+
+			return RedirectToAction("Index");
 		}
 
 

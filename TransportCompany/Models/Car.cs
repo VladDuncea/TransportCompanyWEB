@@ -20,5 +20,9 @@ namespace TransportCompany.Models
         [Required,
             Range(0,Double.PositiveInfinity,ErrorMessage = "Value for {0} must be between {1} and {2}!")]
         public float Volume { get; set; }
+
+        //One-to-One cu soferul
+        [Required]
+        public virtual ApplicationUser Driver { get; set; }
     }
 }

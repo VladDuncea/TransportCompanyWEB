@@ -1,4 +1,4 @@
-﻿@model TransportCompany.Models.Car
+﻿@model TransportCompany.Models.CarViewModel
 @{
     ViewBag.Title = "Create";
 }
@@ -9,21 +9,27 @@
 @using (Html.BeginForm(actionName: "New", controllerName: "Car", method: FormMethod.Post))
 {
     <div class="form-group">
-        @Html.LabelFor(m => m.RegistrationNr, labelText: "Registration Number:")
-        @Html.TextBoxFor(m => m.RegistrationNr, null, new { placeholder = "Type in the car's reg nr", @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.RegistrationNr, "", new { @class = "text-danger" })
+        @Html.LabelFor(m => m.Car.RegistrationNr, labelText: "Registration Number:")
+        @Html.TextBoxFor(m => m.Car.RegistrationNr, null, new { placeholder = "Type in the car's reg nr", @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Car.RegistrationNr, "", new { @class = "text-danger" })
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.Model, "Car model:")
-        @Html.TextBoxFor(m => m.Model, null, new { placeholder = "Type in the car's model", @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Model, "", new { @class = "text-danger" })
+        @Html.LabelFor(m => m.Car.Model, "Car model:")
+        @Html.TextBoxFor(m => m.Car.Model, null, new { placeholder = "Type in the car's model", @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Car.Model, "", new { @class = "text-danger" })
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.Volume, "Volume (in liters):")
-        @Html.TextBoxFor(m => m.Volume, null, new { placeholder = "Type in the car's volume", @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Volume, "", new { @class = "text-danger" })
+        @Html.LabelFor(m => m.Car.Volume, "Volume (in liters):")
+        @Html.TextBoxFor(m => m.Car.Volume, null, new { placeholder = "Type in the car's volume", @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Car.Volume, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.DriverId, "Designated driver:")
+        @Html.DropDownListFor(m => m.DriverId, new SelectList(Model.ListDrivers, "Value", "Text"), "Choose a driver", new { @class = "form - control" })
+        @Html.ValidationMessageFor(m => m.DriverId, "", new { @class = "text-danger" })
     </div>
 
     <button style="margin-right:5px" class="btn btn-primary" type="submit">Add</button>

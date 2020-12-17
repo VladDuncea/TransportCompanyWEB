@@ -1,6 +1,6 @@
-﻿@model TransportCompany.Models.Car
+﻿@model TransportCompany.Models.CarViewModel
 @{
-    ViewBag.Title = "Edit " + Model.RegistrationNr;
+    ViewBag.Title = "Edit " + Model.Car.RegistrationNr;
 }
 
 <h2>@ViewBag.Title</h2>
@@ -9,18 +9,24 @@
 {
     @Html.HttpMethodOverride(HttpVerbs.Put)
 
-    @Html.HiddenFor(m => m.RegistrationNr)
+    @Html.HiddenFor(m => m.Car.RegistrationNr)
 
     <div class="form-group">
-        @Html.LabelFor(m => m.Model, "Car model:")
-        @Html.EditorFor(m => m.Model, new { htmlAttributes = new { @class = "form-control" } })
-        @Html.ValidationMessageFor(m => m.Model, "", new { @class = "text-danger" })
+        @Html.LabelFor(m => m.Car.Model, "Car model:")
+        @Html.EditorFor(m => m.Car.Model, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(m => m.Car.Model, "", new { @class = "text-danger" })
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.Volume, "Volume (in liters):")
-        @Html.EditorFor(m => m.Volume, new { htmlAttributes = new { @class = "form-control" } })
-        @Html.ValidationMessageFor(m => m.Volume, "", new { @class = "text-danger" })
+        @Html.LabelFor(m => m.Car.Volume, "Volume (in liters):")
+        @Html.EditorFor(m => m.Car.Volume, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(m => m.Car.Volume, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.DriverId, "Designated driver:")
+        @Html.DropDownListFor(m => m.DriverId, new SelectList(Model.ListDrivers, "Value", "Text"), "Choose a driver", new { @class = "form - control" })
+        @Html.ValidationMessageFor(m => m.DriverId, "", new { @class = "text-danger" })
     </div>
 
     <button class="btn btn-primary" type="submit">Update</button>

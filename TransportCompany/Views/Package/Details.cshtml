@@ -1,6 +1,7 @@
 ﻿@model TransportCompany.Models.Package
 @{
     ViewBag.Title = "Details";
+    ViewBag.Admin = User.IsInRole("Admin");
 }
 
 <h2>@Model.PackageId</h2>
@@ -17,11 +18,15 @@
 <br />
 <p>@Model.Weight</p>
 
-@using (Html.BeginForm(actionName: "Edit", controllerName: "Package", method: FormMethod.Get, routeValues:
-new { id = Model.PackageId }))
+@if (ViewBag.Admin)
 {
-    <button style="margin-right:5px" class="btn btn-primary col-lg-1" type="submit">Update</button>
+    using (Html.BeginForm(actionName: "Edit", controllerName: "Package", method: FormMethod.Get, routeValues:
+        new { id = Model.PackageId }))
+    {
+        <button style="margin-right:5px" class="btn btn-primary col-lg-1" type="submit">Update</button>
+    }
 }
+
 
 @using (Html.BeginForm(actionName: "Delete", controllerName: "Package", routeValues:
 new { id = Model.PackageId }))
