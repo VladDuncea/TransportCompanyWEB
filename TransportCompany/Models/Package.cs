@@ -25,9 +25,14 @@ namespace TransportCompany.Models
 		//public virtual City FromCity { get; set; }
 
 		[Required]
+		//One-to-many
 		public virtual City ToCity { get; set; }
 
 		[Required]
+		//One-to-many
 		public virtual ApplicationUser Client { get; set; }
+
+		//One-to-many relationship
+		public virtual Transport Transport { get; set; }
 	}
 }

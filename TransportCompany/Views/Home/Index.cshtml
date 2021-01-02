@@ -36,4 +36,13 @@
             <p><a class="btn btn-default" href="/City">Apasa aici.</a></p>
         </div>
     }
+
+    @if (ViewBag.Admin || ViewBag.Driver)
+    {
+        <div class="col-md-3">
+            <h2>Transports</h2>
+            <p>See and manage transports!</p>
+            <p><a class="btn btn-default" href="/Transport">Press here.</a></p>
+        </div>
+    }
 </div>

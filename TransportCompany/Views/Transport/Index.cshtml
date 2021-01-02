@@ -1,0 +1,45 @@
+﻿@model TransportCompany.Models.Transport
+@{
+    ViewBag.Title = "Transports";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<br />
+
+@using (Html.BeginForm(actionName: "New", controllerName: "Transport", method: FormMethod.Get))
+{
+    <button class="btn btn-primary">Add a transport</button>
+}
+<br />
+
+
+
+<div class="panel-group">
+
+    @foreach (TransportCompany.Models.Transport transport in ViewBag.Transports)
+    {
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @Html.LabelFor(m => m.TransportId, "Transport ID")
+                <br />
+                <p>@transport.TransportId</p>
+
+                @Html.LabelFor(m => m.Name)
+                <br />
+                <p>@transport.Name</p>
+
+                @Html.LabelFor(m => m.TransportDate)
+                <br />
+                <p>@transport.TransportDate</p>
+
+                @using (Html.BeginForm(actionName: "Details", controllerName: "Transport", method: FormMethod.Get,
+                    routeValues: new { id = transport.TransportId }))
+                {
+                    <button class="btn btn-primary">Details</button>
+                }
+            </div>
+        </div>
+    }
+
+</div>

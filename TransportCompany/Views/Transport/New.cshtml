@@ -1,0 +1,40 @@
+﻿@model TransportCompany.Models.TransportViewModel
+@{
+    ViewBag.Title = "Create a transport";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+@using (Html.BeginForm(actionName: "New", controllerName: "Transport", method: FormMethod.Post))
+{
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Transport.Name, "Transport name")
+        @Html.TextBoxFor(m => m.Transport.Name, null, new { placeholder = "Type in the package's name", @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Transport.Name, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Transport.TransportDate, "Transport date")
+        @Html.TextBoxFor(m => m.Transport.TransportDate, null, new { textmode = "Date", placeholder = "Type in the package's name", @class = "form-control hasDatepicker" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.DriverId, "Designated driver: ")
+        @Html.DropDownListFor(m => m.DriverId, new SelectList(Model.ListDrivers, "Value", "Text"), "Choose a city", new { @class = "form - control" })
+        @Html.ValidationMessageFor(m => m.DriverId, "", new { @class = "text-danger" })
+    </div>
+
+    <button style="margin-right:5px" class="btn btn-primary" type="submit">Add</button>
+}
+
+<br />
+
+@using (Html.BeginForm(actionName: "Index", controllerName: "Transport", method: FormMethod.Get))
+{
+    <button type="submit" class="btn btn-danger">Cancel</button>
+}
+
+<script src="../../Scripts/jquery-1.3.2.min.js" language="javascript" type="text/javascript" />
+<script src="../../Scripts/jquery-ui-1.7.1.custom.min.js" type="text/javascript" />

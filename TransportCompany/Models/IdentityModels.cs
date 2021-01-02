@@ -29,6 +29,7 @@ namespace TransportCompany.Models
         public DbSet<Car> Cars { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<Package> Packages { get; set; }
+        public DbSet<Transport> Transports { get; set; }
 
 
         public static ApplicationDbContext Create()
