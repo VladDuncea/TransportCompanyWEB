@@ -38,7 +38,7 @@ namespace TransportCompany.Controllers
 					return View(car);
 				}
 
-				return HttpNotFound("Couldn't find the car with regNr: " + id + " !");
+				return HttpNotFound("Couldn't find the car with id: " + id + " !");
 			}
 
 			return HttpNotFound("Missing id parameter!");
@@ -119,7 +119,7 @@ namespace TransportCompany.Controllers
 				if (car == null)
 				{
 					//Masina nu exista in baza de date
-					return HttpNotFound("Couldn't find the car with regNr: " + id + " !");
+					return HttpNotFound("Couldn't find the car with id: " + id + " !");
 				}
 
 				//Constuim un car view model
@@ -159,7 +159,7 @@ namespace TransportCompany.Controllers
 
 				if (ModelState.IsValid)
 				{
-					Car car = ctx.Cars.Find(editCar.Car.RegistrationNr);
+					Car car = ctx.Cars.Find(editCar.Car.CarId);
 
 					if (TryUpdateModel(car))
 					{
@@ -193,7 +193,7 @@ namespace TransportCompany.Controllers
 				if(car == null)
                 {
 					//Masina nu exista in baza de date
-					return HttpNotFound("Couldn't find the car with regNr: " + id + " !");
+					return HttpNotFound("Couldn't find the car with id: " + id + " !");
 				}
 
 				ctx.Cars.Remove(car);

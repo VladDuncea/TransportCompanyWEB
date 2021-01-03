@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -21,7 +22,7 @@ namespace TransportCompany.Controllers
 			List<Transport> transports;
 			if (User.IsInRole("Admin"))
 			{
-				//Afisam toate pachetele
+				//Afisam toate transporturile
 				transports = ctx.Transports.ToList();
 			}
 			else
@@ -77,10 +78,11 @@ namespace TransportCompany.Controllers
 		[Authorize(Roles = "Admin")]
 		public ActionResult New()
 		{
-			//Construim un pachet nou, fara date
+			//Construim un transport nou, fara date
 			Transport transport = new Transport();
+			transport.TransportDate = DateTime.Today;
 
-			//Constuim un package view model
+			//Constuim un transport view model
 			TransportViewModel transportViewModel = new TransportViewModel();
 			transportViewModel.Transport = transport;
 			transportViewModel.ListDrivers = GetAllDrivers();
@@ -108,7 +110,7 @@ namespace TransportCompany.Controllers
 
 				if (ModelState.IsValid)
 				{
-					//Adauga pachetul in baza de date
+					//Adauga transportul in baza de date
 					ctx.Transports.Add(newTransport.Transport);
 
 					//Save database state
@@ -123,70 +125,14 @@ namespace TransportCompany.Controllers
 			}
 			catch (Exception e)
 			{
-				//A aparut o eroare, ne intoarcem la edit
+				//A aparut o eroare, ne intoarcem la new
 				return View(newTransport);
 			}
 		}
 
-		// Edit ----------------------------
+        // Delete ----------------------------
 
-		[HttpGet]
-		[Authorize(Roles = "Admin")]
-		public ActionResult Edit(int? id)
-		{
-			if (id == null)
-			{
-				//Nu avem parametrul id
-				return HttpNotFound("Missing id parameter!");
-			}
-			//Cautam pachetul
-			Transport transport = ctx.Transports.Find(id);
-
-			if (transport == null)
-			{
-				//Pachetul nu exista in baza de date
-				return HttpNotFound("Couldn't find the Transport with id: " + id + " !");
-			}
-
-			//Am gasit pachetul
-			return View(transport);
-		}
-
-		//[HttpPut]
-		//[Authorize(Roles = "Admin")]
-		//public ActionResult Edit(Transport editTransport)
-		//{
-		//	try
-		//	{
-		//		//Eliminam verificarile pe campurile pe care nu le folosim
-		//		ModelState.Remove("ToCity");
-		//		ModelState.Remove("Client");
-
-		//		if (ModelState.IsValid)
-		//		{
-		//			Package package = ctx.Packages.Find(editTransport.PackageId);
-
-		//			if (TryUpdateModel(package))
-		//			{
-		//				package.Volume = editTransport.Volume;
-		//				package.Weight = editTransport.Weight;
-		//				ctx.SaveChanges();
-		//			}
-
-		//			return RedirectToAction("Index");
-		//		}
-
-		//		return View(editTransport);
-		//	}
-		//	catch (Exception)
-		//	{
-		//		return View(editTransport);
-		//	}
-		//}
-
-		// Delete ----------------------------
-
-		[HttpDelete]
+        [HttpDelete]
 		[Authorize(Roles = "Admin")]
 		public ActionResult Delete(int? id)
 		{
@@ -200,9 +146,11 @@ namespace TransportCompany.Controllers
 
 			if (transport == null)
 			{
-				//Masina nu exista in baza de date
+				//transportul nu exista in baza de date
 				return HttpNotFound("Couldn't find the Transport with id: " + id + " !");
 			}
+
+			ctx.Packages.Where(m => m.Transport.TransportId == transport.TransportId).Load();
 
 			ctx.Transports.Remove(transport);
 			ctx.SaveChanges();
@@ -211,20 +159,132 @@ namespace TransportCompany.Controllers
 		}
 
 
+		// Package actions -------------------------------
+		[HttpGet]
+		[Authorize(Roles = "Admin,Driver")]
+		public ActionResult PackageDetails(int? id)
+		{
+			if (id == null)
+			{
+				//Nu avem parametrul id
+				return HttpNotFound("Missing id parameter!");
+			}
+
+			//Am gasit pachetul
+			return RedirectToAction("Details","Package",new { id = id});
+		}
+
+		[HttpGet]
+		[Authorize(Roles = "Admin")]
+		public ActionResult AddPackage(int? id)
+		{
+			if (id == null)
+			{
+				//Nu avem parametrul id
+				return HttpNotFound("Missing id parameter!");
+			}
+			Transport transport = ctx.Transports.Find(id);
+			if (transport == null)
+			{
+				//transportul nu exista in baza de date
+				return HttpNotFound("Couldn't find the Transport with id: " + id + " !");
+			}
+
+			TransportPackageViewModel transportPackage = new TransportPackageViewModel();
+			transportPackage.TransportId = transport.TransportId;
+			transportPackage.ListPackages = GetAllPackages();
+
+
+			return View(transportPackage);
+		}
+
+		[HttpPost]
+		[Authorize(Roles = "Admin")]
+		public ActionResult AddPackage(TransportPackageViewModel newTransport)
+		{
+			newTransport.ListPackages = GetAllPackages();
+			try
+			{
+				Package package = ctx.Packages.Find(newTransport.PackageId);
+				Transport transport = ctx.Transports.Find(newTransport.TransportId);
+
+				if (package == null || transport == null)
+				{
+					//eroare la pachet
+					return View(newTransport);
+				}
+
+                if (TryUpdateModel(transport))
+                {
+					transport.Packages.Add(package);
+
+					ctx.SaveChanges();
+                }
+
+                return RedirectToAction("Details", "Transport", new { id = transport.TransportId });
+			}
+			catch (Exception e)
+			{
+				//A aparut o eroare, ne intoarcem la new
+				return View(newTransport);
+			}
+		}
+
+		[HttpGet]
+		[Authorize(Roles = "Admin")]
+		public ActionResult RemovePackage(int? id, int? transportId)
+		{
+			if (id == null)
+			{
+				//Nu avem parametrul id
+				return HttpNotFound("Missing id parameter!");
+			}
+
+			if (transportId == null)
+			{
+				//Nu avem parametrul id
+				return HttpNotFound("Missing TransportId parameter!");
+			}
+
+
+
+			Transport transport = ctx.Transports.Find(transportId);
+			Package package = ctx.Packages.Find(id);
+
+			if (transport == null || package == null)
+			{
+				//transportul nu exista in baza de date
+				return HttpNotFound("Couldn't find the Transport with id: " + id + " !");
+			}
+
+			if (TryUpdateModel(transport))
+			{
+				transport.Packages.Remove(package);
+
+				ctx.SaveChanges();
+			}
+
+			return RedirectToAction("Details", "Transport", new { id = transport.TransportId });
+		}
+
 		// Helpers -------------------------------
 		[NonAction]
-		public IEnumerable<SelectListItem> GetAllCities()
+		public IEnumerable<SelectListItem> GetAllPackages()
 		{
 			// generam o lista goala
 			var selectList = new List<SelectListItem>();
-			foreach (var city in ctx.Cities.ToList())
+			foreach (var package in ctx.Packages.ToList())
 			{
-				// adaugam in lista elementele necesare pt dropdown
-				selectList.Add(new SelectListItem
-				{
-					Value = city.CityId.ToString(),
-					Text = city.Name
-				});
+				if(package.Transport == null)
+                {
+					// adaugam in lista elementele necesare pt dropdown
+					selectList.Add(new SelectListItem
+					{
+						Value = package.PackageId.ToString(),
+						Text = "Pachet " + package.PackageId.ToString()
+					});
+				}
+				
 			}
 			// returnam lista pentru dropdown
 			return selectList;

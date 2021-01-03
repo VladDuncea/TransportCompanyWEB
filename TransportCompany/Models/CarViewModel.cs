@@ -9,7 +9,7 @@ namespace TransportCompany.Models
 {
     public class CarViewModel
     {
-        //Utilizatorul
+        //Masina
         public Car Car { get; set; }
 
         //Id pentru sofer de destinatie

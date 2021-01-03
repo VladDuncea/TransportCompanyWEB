@@ -31,7 +31,7 @@
                 <p>@car.Model</p>
 
                 @using (Html.BeginForm(actionName: "Details", controllerName: "Car", method: FormMethod.Get,
-                    routeValues: new { id = car.RegistrationNr }))
+                    routeValues: new { id = car.CarId }))
                 {
                     <button class="btn btn-primary">Details</button>
                 }

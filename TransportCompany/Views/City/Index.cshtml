@@ -29,7 +29,7 @@
 
                 @Html.LabelFor(m => m.Longitude)
                 <br />
-                <p>@city.Latitude</p>
+                <p>@city.Longitude</p>
 
                 @using (Html.BeginForm(actionName: "Details", controllerName: "City", method: FormMethod.Get,
                     routeValues: new { id = city.CityId }))

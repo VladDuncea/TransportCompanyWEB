@@ -1,0 +1,19 @@
+﻿@model TransportCompany.Models.TransportPackageViewModel
+@{
+    ViewBag.Title = "Add Package to transport";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm(actionName: "AddPackage", controllerName: "Transport",method: FormMethod.Post))
+{
+    @Html.HiddenFor(m => m.TransportId)
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.PackageId, "Package to add: ")
+        @Html.DropDownListFor(m => m.PackageId, new SelectList(Model.ListPackages, "Value", "Text"), "Choose a package", new { @class = "form - control" })
+        @Html.ValidationMessageFor(m => m.PackageId, "", new { @class = "text-danger" })
+    </div>
+
+    <button class="btn btn-primary" type="submit">Add</button>
+}

@@ -1,0 +1,61 @@
+﻿@model TransportCompany.Models.Transport
+@{
+    ViewBag.Title = "Details";
+    ViewBag.Admin = User.IsInRole("Admin");
+}
+
+<h2>Package ID: @Model.Name</h2>
+
+@Html.LabelFor(m => m.TransportId, labelText: "Transport ID")
+<br />
+<p>@Model.Name</p>
+
+@Html.LabelFor(m => m.TransportDate, labelText: "Transport Date")
+<br />
+<p>@Model.TransportDate</p>
+
+@if (ViewBag.Admin)
+{
+    using (Html.BeginForm(actionName: "Delete", controllerName: "Transport", routeValues:
+    new { id = Model.TransportId }))
+    {
+        @Html.HttpMethodOverride(HttpVerbs.Delete)
+        <button class="btn btn-danger col-lg-1" type="submit">Delete</button>
+    }
+}
+<br />
+<h3>Packages </h3>
+@if (ViewBag.Admin)
+{
+    using (Html.BeginForm(actionName: "AddPackage", controllerName: "Transport", routeValues:
+   new { id = Model.TransportId }, method: FormMethod.Get))
+    {
+        <button class="btn btn-success col-lg-2" type="submit">Add package</button>
+    }
+}<br />
+
+<table class="table">
+    <thead>
+        <th>Package ID</th>
+        <th>City of destination</th>
+        <th>Volume</th>
+        <th>Weight</th>
+        <th>Details</th>
+        <th>Remove</th>
+    </thead>
+
+    <tbody>
+        @foreach (TransportCompany.Models.Package package in Model.Packages)
+        {
+            <tr>
+                <td>@package.PackageId</td>
+                <td>@package.ToCity.Name</td>
+                <td>@package.Volume</td>
+                <td>@package.Weight</td>
+                <td>@Html.ActionLink("Details", "PackageDetails", new { id = package.PackageId })</td>
+                <td>@Html.ActionLink("Remove", "RemovePackage", new { id = package.PackageId, transportId = Model.TransportId })</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

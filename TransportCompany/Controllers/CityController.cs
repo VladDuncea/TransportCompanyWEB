@@ -137,7 +137,7 @@ namespace TransportCompany.Controllers
 		{
 			if (id != null)
 			{
-				City city = ctx.Cities.Find();
+				City city = ctx.Cities.Find(id);
 
 				if (city == null)
 				{

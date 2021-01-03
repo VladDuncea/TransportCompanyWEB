@@ -9,6 +9,7 @@
 {
     @Html.HttpMethodOverride(HttpVerbs.Put)
 
+    @Html.HiddenFor(m => m.Car.CarId)
     @Html.HiddenFor(m => m.Car.RegistrationNr)
 
     <div class="form-group">

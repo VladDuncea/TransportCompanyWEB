@@ -12,11 +12,11 @@ namespace TransportCompany.Models
 		public int PackageId { get; set; }
 
 		[Required,
-			Range(0, 150, ErrorMessage = "Value for {0} must be between {1} and {2}!")]
+			Range(1, 150, ErrorMessage = "Value for {0} must be between {1} and {2}!")]
 		public float Volume { get; set; }
 
 		[Required,
-			Range(0, 1000, ErrorMessage = "Value for {0} must be between {1} and {2}!")]
+			Range(1, 1000, ErrorMessage = "Value for {0} must be between {1} and {2}!")]
 		public float Weight { get; set; }
 
 		//Foreign keys with City

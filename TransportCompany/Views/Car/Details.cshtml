@@ -14,16 +14,20 @@
 <br />
 <p>@Model.Volume</p>
 
+@Html.LabelFor(m => m.Driver.UserName, labelText: "Driver")
+<br />
+<p>@Model.Driver.UserName</p>
+
 @if (ViewBag.Admin)
 {
     using (Html.BeginForm(actionName: "Edit", controllerName: "Car", method: FormMethod.Get, routeValues:
-    new { id = Model.RegistrationNr }))
+    new { id = Model.CarId }))
     {
         <button style="margin-right:5px" class="btn btn-primary col-lg-1" type="submit">Update</button>
     }
 
     using (Html.BeginForm(actionName: "Delete", controllerName: "Car", routeValues:
-    new { id = Model.RegistrationNr }))
+    new { id = Model.CarId }))
     {
         @Html.HttpMethodOverride(HttpVerbs.Delete)
         <button class="btn btn-danger col-lg-1" type="submit">Delete</button>

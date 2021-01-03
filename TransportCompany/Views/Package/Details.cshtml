@@ -4,7 +4,7 @@
     ViewBag.Admin = User.IsInRole("Admin");
 }
 
-<h2>@Model.PackageId</h2>
+<h2>Package ID: @Model.PackageId</h2>
 
 @Html.LabelFor(m => m.ToCity.Name, labelText: "City of destination")
 <br />
