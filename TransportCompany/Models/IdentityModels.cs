@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -10,8 +11,8 @@ namespace TransportCompany.Models
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit https://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
-
         public virtual Car Car { get; set; }     
+        public virtual ICollection<Package> Packages { get; set; }     
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
@@ -35,6 +36,14 @@ namespace TransportCompany.Models
         public DbSet<Package> Packages { get; set; }
         public DbSet<Transport> Transports { get; set; }
 
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Package>()
+                .HasRequired(f => f.Client)
+                .WithMany()
+                .WillCascadeOnDelete(false);
+        }
 
         public static ApplicationDbContext Create()
         {

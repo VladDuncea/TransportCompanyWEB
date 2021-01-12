@@ -17,7 +17,7 @@ namespace TransportCompany.Controllers
 
 		// Index -----------------------------
 		[HttpGet]
-		[Authorize(Roles = "Admin,Client")]
+		[Authorize(Roles = "Admin,Client,Driver")]
 		public ActionResult Index()
 		{
 			List<Package> packages;
@@ -41,7 +41,7 @@ namespace TransportCompany.Controllers
 
 		// Details ----------------------------
 		[HttpGet]
-		[Authorize(Roles = "Admin,Client")]
+		[Authorize(Roles = "Admin,Client,Driver")]
 		public ActionResult Details(int? id)
 		{
 			if (id == null)
@@ -60,7 +60,7 @@ namespace TransportCompany.Controllers
 
 
 			//Verificare drepturi admin
-			if (!User.IsInRole("Admin"))
+			if (!(User.IsInRole("Admin")|| User.IsInRole("Driver")))
 			{
 				//Utilizatorul curent
 				ApplicationUser user = ctx.Users.Find(User.Identity.GetUserId());

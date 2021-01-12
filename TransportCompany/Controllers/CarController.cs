@@ -218,7 +218,7 @@ namespace TransportCompany.Controllers
 				var userStore = new UserStore<ApplicationUser>(ctx);
 				var userManager = new UserManager<ApplicationUser>(userStore);
 
-				if (userManager.IsInRole(driver.Id,"Driver"))
+				if (userManager.IsInRole(driver.Id,"Driver") && driver.Car == null)
                 {
 					// adaugam in lista elementele necesare pt dropdown
 					selectList.Add(new SelectListItem

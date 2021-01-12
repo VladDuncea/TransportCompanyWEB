@@ -1,17 +1,21 @@
 ﻿@model TransportCompany.Models.Transport
 @{
     ViewBag.Title = "Transports";
+    ViewBag.Admin = User.IsInRole("Admin");
 }
 
 <h2>@ViewBag.Title</h2>
 
 <br />
-
-@using (Html.BeginForm(actionName: "New", controllerName: "Transport", method: FormMethod.Get))
+@if (ViewBag.Admin)
 {
-    <button class="btn btn-primary">Add a transport</button>
+    using (Html.BeginForm(actionName: "New", controllerName: "Transport", method: FormMethod.Get))
+    {
+        <button class="btn btn-primary">Add a transport</button>
+    }
+    <br />
 }
-<br />
+
 
 
 
@@ -29,9 +33,9 @@
                 <br />
                 <p>@transport.Name</p>
 
-                @Html.LabelFor(m => m.TransportDate)
+                <label>Data transportului</label>
                 <br />
-                <p>@transport.TransportDate</p>
+                <p>@transport.TransportDay/@transport.TransportMonth/@transport.TransportYear</p>
 
                 @using (Html.BeginForm(actionName: "Details", controllerName: "Transport", method: FormMethod.Get,
                     routeValues: new { id = transport.TransportId }))

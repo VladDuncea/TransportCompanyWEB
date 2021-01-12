@@ -182,6 +182,8 @@
     <Compile Include="Models\Car.cs" />
     <Compile Include="Models\CarViewModel.cs" />
     <Compile Include="Models\City.cs" />
+    <Compile Include="Models\MyValidation\PackageVolumeValidator.cs" />
+    <Compile Include="Models\MyValidation\TransportDayValidator.cs" />
     <Compile Include="Models\Package.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />

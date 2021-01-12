@@ -16,8 +16,18 @@ namespace TransportCompany.Models
             MaxLength(100, ErrorMessage = "Value for {0} must be at most {1} characters long!")]
         public string Name { get; set; }
 
-        [Required]
-        public DateTime TransportDate { get; set; }
+        [Required, 
+            RegularExpression(@"^(([1-9])|([12]\d)|(3[01]))$", ErrorMessage = "This is not a valid day!"),
+            TransportDayValidator]
+        public int TransportDay { get; set; }
+
+        [Required, 
+            RegularExpression(@"^(0[1-9])|(1[012])|([1-9])$", ErrorMessage = "This is not a valid month!")]
+        public int TransportMonth { get; set; }
+
+        [Required, 
+            RegularExpression(@"^[1-2](\d{3})$", ErrorMessage = "This is not a valid year!")]
+        public int TransportYear { get; set; }
 
         // many-to-one relationship
         public virtual ICollection<Package> Packages { get; set; }

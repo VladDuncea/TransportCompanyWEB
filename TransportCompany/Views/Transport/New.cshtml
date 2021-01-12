@@ -16,8 +16,21 @@
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.Transport.TransportDate, "Transport date")
-        @Html.TextBoxFor(m => m.Transport.TransportDate, null, new { @id = "datepicker", @class = "form-control" })
+        @Html.LabelFor(m => m.Transport.TransportDay, "Transport day")
+        @Html.TextBoxFor(m => m.Transport.TransportDay, null, new { placeholder = "Ex: 12", @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Transport.TransportDay, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Transport.TransportMonth, "Transport month")
+        @Html.TextBoxFor(m => m.Transport.TransportMonth, null, new { placeholder = "Ex: 5", @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Transport.TransportMonth, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Transport.TransportYear, "Transport year")
+        @Html.TextBoxFor(m => m.Transport.TransportYear, null, new { placeholder = "Ex: 2022", @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Transport.TransportYear, "", new { @class = "text-danger" })
     </div>
 
     <div class="form-group">

@@ -80,7 +80,9 @@ namespace TransportCompany.Controllers
 		{
 			//Construim un transport nou, fara date
 			Transport transport = new Transport();
-			transport.TransportDate = DateTime.Today;
+			transport.TransportDay = DateTime.Today.Day;
+			transport.TransportMonth = DateTime.Today.Month;
+			transport.TransportYear = DateTime.Today.Year;
 
 			//Constuim un transport view model
 			TransportViewModel transportViewModel = new TransportViewModel();
@@ -150,7 +152,7 @@ namespace TransportCompany.Controllers
 				return HttpNotFound("Couldn't find the Transport with id: " + id + " !");
 			}
 
-			ctx.Packages.Where(m => m.Transport.TransportId == transport.TransportId).Load();
+			ctx.Packages.Where(m => m.Transports.Contains(transport)).Load();
 
 			ctx.Transports.Remove(transport);
 			ctx.SaveChanges();
@@ -192,7 +194,7 @@ namespace TransportCompany.Controllers
 
 			TransportPackageViewModel transportPackage = new TransportPackageViewModel();
 			transportPackage.TransportId = transport.TransportId;
-			transportPackage.ListPackages = GetAllPackages();
+			transportPackage.ListPackages = GetAllPackages(transport);
 
 
 			return View(transportPackage);
@@ -202,7 +204,7 @@ namespace TransportCompany.Controllers
 		[Authorize(Roles = "Admin")]
 		public ActionResult AddPackage(TransportPackageViewModel newTransport)
 		{
-			newTransport.ListPackages = GetAllPackages();
+			newTransport.ListPackages = GetAllPackages(ctx.Transports.Find(newTransport.TransportId));
 			try
 			{
 				Package package = ctx.Packages.Find(newTransport.PackageId);
@@ -269,13 +271,13 @@ namespace TransportCompany.Controllers
 
 		// Helpers -------------------------------
 		[NonAction]
-		public IEnumerable<SelectListItem> GetAllPackages()
+		public IEnumerable<SelectListItem> GetAllPackages(Transport t)
 		{
 			// generam o lista goala
 			var selectList = new List<SelectListItem>();
 			foreach (var package in ctx.Packages.ToList())
 			{
-				if(package.Transport == null)
+				if(!package.Transports.Contains(t))
                 {
 					// adaugam in lista elementele necesare pt dropdown
 					selectList.Add(new SelectListItem

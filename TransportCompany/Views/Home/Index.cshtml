@@ -12,19 +12,22 @@
 </div>
 
 <div class="row">
-    <div class="col-md-3">
-        <h2>Pachete</h2>
-        <p>
-            Adauga sau viualizeaza pachetele tale!
-        </p>
-        <p><a class="btn btn-default" href="/Package">Apasa aici.</a></p>
-    </div>
+    @if (ViewBag.Client || ViewBag.Admin || ViewBag.Driver)
+    {
+        <div class="col-md-3">
+            <h2>Pachete</h2>
+            <p>
+                See and manage your packages!
+            </p>
+            <p><a class="btn btn-success" href="/Package">Press here.</a></p>
+        </div>
+    }
     @if (ViewBag.Admin || ViewBag.Driver)
     {
         <div class="col-md-3">
             <h2>Masini</h2>
             <p>Vizualizeaza masinile disponibile !</p>
-            <p><a class="btn btn-default" href="/Car">Apasa aici.</a></p>
+            <p><a class="btn btn-success" href="/Car">Press here.</a></p>
         </div>
     }
 
@@ -32,8 +35,8 @@
     {
         <div class="col-md-3">
             <h2>Orase</h2>
-            <p>Vizualizeaza orasele, editeaza-le sau adauga unele noi!</p>
-            <p><a class="btn btn-default" href="/City">Apasa aici.</a></p>
+            <p>Vizualizeaza,editeaza sau adauga orase!</p>
+            <p><a class="btn btn-success" href="/City">Press here.</a></p>
         </div>
     }
 
@@ -42,7 +45,7 @@
         <div class="col-md-3">
             <h2>Transports</h2>
             <p>See and manage transports!</p>
-            <p><a class="btn btn-default" href="/Transport">Press here.</a></p>
+            <p><a class="btn btn-success" href="/Transport">Press here.</a></p>
         </div>
     }
 </div>
